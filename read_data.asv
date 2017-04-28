@@ -1,0 +1,4 @@
+[y,fs] = audioread('seven.wav');
+L = length(y);
+fft_y = fft(y);
+plot(abs(fft_y/L))
