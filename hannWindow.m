@@ -30,7 +30,30 @@ for i=1:num_bands
     wave(:,i) = real(ifft(sig(:,i)));
 end
 
-out = wave;
+% Full-wave rectification in the time domain.
+    %A full-wave bridge rectifier converts the whole of the 
+    %input waveform to one of constant polarity 
+    %(positive or negative) at its output
+    
+    %esentially turning any negative values to positive values
+% And back to frequency with FFT.
+for i=1:num_bands
+    for j=1:n
+        if wave(j,i)<0
+            wave(j,i) = -wave(j,i);
+        end
+    end
+    freq(:,i) = fft(wave(:,i));
+end
 
+%Convolving with half-Hanning same as multiplying in
+% frequency. Multiply half-Hanning FFT by signal FFT. Inverse
+% transform to get output in the time domain.
 
+for i = 1:num_bands
+    filtered(:,i) = freq(:,i).*fft(hann);
+    out(:,i) = real(ifft(filtered(:,i)));
+end
+
+ 
 end
