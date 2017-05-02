@@ -1,0 +1,6 @@
+bandlimits = p[
+sig = audioread('skrill.wav');
+sig = sig(:,1);
+out = filterbank(sig);
+
+plot(abs(out(:,6)))
