@@ -1,0 +1,11 @@
+function out = filterbank(sig, bandlimits, maxfreq)
+
+%set defaults
+if nargin <2
+    bandlimits
+
+
+
+
+
+end

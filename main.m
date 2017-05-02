@@ -1,51 +1,50 @@
-[St,Fs] = audioread('skrill.wav');  
-L = size(St,1); 
-T = 1/Fs;                   
-t = (0:L-1)*T;
-% Input signal chart S(t)
-subplot(2,3,1); 
-plot(t,St);grid;                                         
-title('Signal S(t)')
-xlabel('Time,s')
-ylabel('Signal amplitude S(t)')
-ylim([-1.5 1.5])
-% Fourier transform of the input signal S(t)
-% NFFT = 2^nextpow2(L);                              % Next power of 2 from length of L
-NFFT=2^16;
-Sf = fft(St,NFFT)/NFFT;
-f =Fs/2*linspace(0,1,NFFT/2);
-Z=2*abs(Sf(1:NFFT/2));
-% Input signal spectrum chart Sf(f)
-subplot(2,3,2);
-plot(f(1:NFFT/2),20*log10(Z(1:NFFT/2)));grid;        
-title('Signal spectrum S(t)')
-xlabel('Frequency (Hz)')
-ylabel('Signal magnitude |Sf(f)|, dB')
-% Band filter
-[b,a]=ellip(4,0.001,30,[50 500]*2/Fs);
-[H,w]=freqz(b,a,NFFT);
-subplot(2,3,3);
-plot(w(1:NFFT)*Fs/(2*pi),abs(H(1:NFFT)));grid;                      % Frequency response of the filter
-title('Frequency response')
-xlabel('Frequency (Hz)')
-ylabel('Response factor')
-SL=filter(b,a,St);
-% Output signal chart SL(t)
-subplot(2,3,4);
-plot(t,SL);grid;                                            
-title('Signal SL(t)')
-xlabel('Time,s')
-ylabel('Signal amplitude SL(t)')
-ylim([-1.5 1.5])
-% Fourier transform of the output signal (after a filtering)
-SLf = fft(SL,NFFT)/NFFT;
-% ff =Fs/2*linspace(0,1,NFFT/2);
-ZZ=2*abs(SLf(1:NFFT/2));
-% Output (filtered) signal spectrum chart SLf(f)
-subplot(2,3,5);
-plot(f(1:NFFT/2),20*log10(ZZ(1:NFFT/2)));grid;        
-title('Signal spectrum SL(t)')
-xlabel('Frequency (Hz)')
-ylabel('Signal magnitude |SLf(f)|, dB')
-% Write to disk
-audiowrite('output.wav', SL,Fs);
+tic
+[low, fs] = audioread('120.mp3');
+song_len = (size(low)/fs);
+down_low = downsample(low, 100);
+%audiowrite('output.wav', down_low, fs/1000);
+% plot(down_low);
+% figure
+% plot(low);
+
+shft_amt = zeros(10,1);
+down_low = down_low(:,1);
+shift_down_low = cat(1, shft_amt, down_low);
+
+cross_cor = xcorr(down_low, shift_down_low);
+% auto_cor = autocorr(down_low);
+[ACF,lags,bounds] = autocorr(down_low,int64(fs/100),[],2);
+
+
+plot(ACF)
+
+[~,locs]=findpeaks(ACF);
+lagindex = mean(diff(locs)*0.01);
+
+((fs/10000)*60)/lagindex;
+
+a = [];
+for i = 100:400
+    a = [a ACF(i)];
+end
+
+maxi = max(a);
+
+ind = find(ACF==maxi)
+
+BPM = fs/100*60/ind
+ind = fs/100*60/120
+
+% fs1 = fs/100;
+% [s1,f,t,p1]=spectrogram(down_low,hann(8192));
+% plot(p1)
+% % sf1=10*log10(geomean(p1)./mean(p1)); % spectral flatness
+% % plot(linspace(0,length(down_low)/fs1,length(sf1)),sf1); axis tight
+% 
+% pxx = periodogram(a);
+% %figure(2)
+% %plot(pxx)
+% num=geomean(pxx);
+% den=mean(pxx);
+% spf=num/den ;
+toc
