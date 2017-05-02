@@ -1,7 +1,7 @@
 function [ noteString, keyNum ] = freq2note( hertz )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-keyNum = mod(12*log2(hertz/440)+49,12);
+keyNum = round(mod(12*log2(hertz/440)+49,12));
 if keyNum == 1
     noteString = 'A';
 elseif keyNum == 2
