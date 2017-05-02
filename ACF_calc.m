@@ -1,6 +1,6 @@
 function out = ACF_calc(sig, num_banks, fs)
 	if nargin < 2
-		num_banks = 6;
+		num_banks = 10;
 	end
 
 	if nargin < 3

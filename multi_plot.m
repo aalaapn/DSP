@@ -1,4 +1,7 @@
 function out = multi_plot(sig, x, beg, lags)
+	% function to plot multiple graphs
+	%
+	%
 	if nargin < 3
 		beg = 40
 	end
@@ -13,9 +16,9 @@ function out = multi_plot(sig, x, beg, lags)
 	x = x(beg: lags);
 
 	for i=1:(numplots)
-		subplot(numplots/2, numplots/2-1, i);
+		subplot(3, 4, i);
 		subsig = sig(:,i);
-		subsig = sig(beg:lags);
+		subsig = subsig(beg:lags);
 		plot(x, subsig);
 		title(['filter bank' num2str(i)])
 	end

@@ -4,49 +4,38 @@ for i=1:50
     band = i*100;
     bandlimits = [bandlimits band];
 end
-[sig, fs] = audioread('songs/bagbak.wav');
+
+[sig, fs] = audioread('songs/skrill.wav');
 sig = sig(:,1);
+
+x = 1:length(sig(:,1));
+
+%create filter bank and plot
 out = filterbank(sig);
 
-hann = hannWindow(out);
+% multi_plot(out, x, 1, length(x));
 
-diff = diffrect(hann);
+%create hann_window and plot
+hann_out = hannWindow(out);
+% multi_plot(hann_out, x, 1, length(x));
+% figure
 
+%downsample signal
+down_low = downsample(hann_out, 100);
+% multi_plot(down_low, x, 1, length(x));
 
-down_low = downsample(hann, 100);
+%compute autocorrelation of each bank
+acfs = ACF_calc(down_low, 6, int64(fs/100));
+a = acfs(:,1);
 
-[ACF1,lags1,bounds1] = autocorr(down_low(:,1),int64(fs/100),[],2);
-[ACF2,lags2,bounds2] = autocorr(down_low(:,2),int64(fs/100),[],2);
-[ACF3,lags3,bounds3] = autocorr(down_low(:,3),int64(fs/100),[],2);
-[ACF4,lags4,bounds4] = autocorr(down_low(:,4),int64(fs/100),[],2);
-[ACF5,lags5,bounds5] = autocorr(down_low(:,5),int64(fs/100),[],2);
-[ACF6,lags6,bounds6] = autocorr(down_low(:,6),int64(fs/100),[],2);
+%convert lags to BPM
+BPM_ACF = BPM_convert(a, fs/100);
 
-ACF = [ACF1 ACF2 ACF3 ACF4 ACF5 ACF6];
-BPM_ACF = BPM_convert(ACF1, fs/100);
+% multi_plot(acfs, BPM_ACF, 40, 300);
 
-multi_plot(ACF, BPM_ACF, 40);
+peak = get_peaks(acfs);
+plot(peak)
 
-
-
-
-[~,locs]=findpeaks(ACF3);
-locs
-lagindex = mean(diff(locs)*0.01);
-
-((fs/10000)*60)/lagindex;
-
-a = [];
-for i = 100:400
-    a = [a ACF(i)];
-end
-
-maxi = max(a);
-
-ind = find(ACF==maxi);
-
-BPM = fs/100*60/locs;
-ind = fs/100*60/82
 toc
 % audiowrite('filterbank_out/out1.wav',hann(:,1), fs)
 % audiowrite('filterbank_out/out2.wav',hann(:,2), fs)
