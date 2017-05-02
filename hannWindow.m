@@ -13,7 +13,7 @@ if nargin < 4
     maxfreq = 4096;
 end
 
-n = length(sig)
+n = length(sig);
 num_bands = length(bandlimits);
 
 hannlen = (window_length*2*maxfreq);

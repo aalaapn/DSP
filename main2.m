@@ -4,26 +4,27 @@ for i=1:50
     band = i*100;
     bandlimits = [bandlimits band];
 end
-[sig, fs] = audioread('songs/ode.wav');
+
+[sig, fs] = audioread('songs/skrill.wav');
 sig = sig(:,1);
+
+%create filter bank
 out = filterbank(sig);
-
-hann = hannWindow(out);
-
-diff = diffrect(hann);
-
-
-down_low = downsample(diff, 100);
-
-% auto_cor = autocorr(down_low);
-
-[ACF,lags,bounds] = autocorr(down_low(:,1),int64(fs/100),[],2);
+%create hann_window
+hann_out = hannWindow(out);
+%downsample signal
+down_low = downsample(hann_out, 100);
 
 
+acfs = ACF_calc(down_low, 6, int64(fs/100));
+a = acfs(:,1);
+BPM_ACF = BPM_convert(a, fs/100);
+
+multi_plot(acfs, BPM_ACF, 40, 300);
 
 
-
-[~,locs]=findpeaks(ACF);
+[~,locs]=findpeaks(ACF3);
+locs
 lagindex = mean(diff(locs)*0.01);
 
 ((fs/10000)*60)/lagindex;
@@ -35,9 +36,9 @@ end
 
 maxi = max(a);
 
-ind = find(ACF==maxi)
+ind = find(ACF==maxi);
 
-BPM = fs/100*60/ind
+BPM = fs/100*60/locs;
 ind = fs/100*60/82
 toc
 % audiowrite('filterbank_out/out1.wav',hann(:,1), fs)
