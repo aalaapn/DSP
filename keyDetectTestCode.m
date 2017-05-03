@@ -1,36 +1,22 @@
 clear;
-histogram = zeros(12,1);  % indexed by note num
-[dataA,fsA] = audioread('test-tones/A440hz.wav');
-[dataC,fsC] = audioread('test-tones/C523hz.wav');
-[dataE,fsE] = audioread('test-tones/E659hz.wav');
+[filename,filepath] = uigetfile('*');
+histo = noteHisto(strcat(filepath,filename));
 
-data = dataA + dataC + dataE;
-fs = fsA;
+% plots note histo
+notes = categorical({'A', 'A? / B?', 'B', 'C', 'C? / D?', 'D',...
+    'D? / E?', 'E', 'F', 'F? / G?', 'G', 'G? / A?'});
+bar(notes,histo)
 
-% chop into snippets of 20ms
-dur = 0.02;             % duration of snippet in sec
-durLen = dur*fs;  % duration in indices
-snippets = data(1:min(durLen, length(data)));
-pos = durLen+1;
-while pos < length(data)
-    temp = padarray(data(pos:min(pos+durLen-1, length(data))),[max(0, pos+durLen-1 - length(data))],'post');
-    snippets = horzcat(snippets,temp);
-    pos = pos + durLen + 1;
+% set up "ideal" profiles, indexed by key (note) num
+profiles = zeros(12);
+profiles(:,1) = transpose([3 0 1 0 1 2 0 2 0 2 0 1]);
+
+for i1 = 1:11
+    profiles(:,i1+1) = wshift('1D',profiles(:,1),-i1);
 end
-sampNum = size(snippets);
-sampNum = sampNum(2);
-for in = 1:sampNum
-    p2 = abs(fft(snippets(:,in))/durLen);
-    p1 = p2(1:durLen/2+1);
-    p1(2:end-1) = 2*p1(2:end-1);
-    [pks,locs] = findpeaks(padarray(p1,[1,0]));
-    locs = locs - 1;
-    % temp code: just find 1 peak
-    maxPkLoc = locs(find(pks == max(pks)));
-    freq = fs*(maxPkLoc-1)/durLen;
-    [noteStr, keyNum] = freq2note(freq);
-    if keyNum == 0
-        keyNum = 12;
-    end
-    histogram(keyNum) = histogram(keyNum) + 1;
-end
+
+% sort the histo values for analysis
+[~, histoIndices] = sort(histo,'descend');
+
+key = keyGuess(histoIndices, profiles)
+keyString = char(notes(key))

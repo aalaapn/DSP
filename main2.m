@@ -5,7 +5,7 @@ for i=1:50
     bandlimits = [bandlimits band];
 end
 
-[sig, fs] = audioread('songs/ode.wav');
+[sig, fs] = audioread('songs/twinkle.mp3');
 sig = sig(:,1);
 
 x = 1:length(sig(:,1));
@@ -31,12 +31,13 @@ a = acfs(:,1);
 %convert lags to BPM
 BPM_ACF = BPM_convert(a, fs/100);
 
-multi_plot(acfs, BPM_ACF, 40, 300);
+%multi_plot(acfs, BPM_ACF, 40, 300);
 
-peak = get_peaks(acfs);
-peak = sort(peak);
-x_peak = 1:length(peak);
-scatter(x_peak, peak);
+peak = get_peaks(acfs, fs/100);
+peak
+%peuk = sort(peak);
+%x_peak = 1:length(peak);
+%scatter(x_peak, peak);
 
 toc
 % audiowrite('filterbank_out/out1.wav',hann(:,1), fs)
