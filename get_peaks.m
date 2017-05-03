@@ -15,7 +15,7 @@ function out = get_peaks(acfs, fs)
     bet_100to120 = [];
     bet_120to140 = [];
     bet_140to160 = [];
-    bet_160to_180 = [];
+    bet_160to180 = [];
 
     for i = 1:length(out)
         if(out(i)<60)
@@ -40,11 +40,11 @@ function out = get_peaks(acfs, fs)
         end
     end
     
-    less60
-    bet_60to80
-    bet_80to100
-    bet_100to120
-    bet_120to140
-    bet_140to160
-    bet_160to_180
+    s_less60 = length(less60)
+    s_bet_60to80 = length(bet_60to80)
+    s_bet_80to100 = length(bet_80to100)
+    s_bet_100to120 = length(bet_100to120)
+    s_bet_120to140 = length(bet_120to140)
+    s_bet_140to160 = length(bet_140to160)
+    s_bet_160to180 = length(bet_160to180)
 end

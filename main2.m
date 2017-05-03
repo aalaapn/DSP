@@ -5,7 +5,7 @@ for i=1:50
     bandlimits = [bandlimits band];
 end
 
-[sig, fs] = audioread('songs/love.wav');
+[sig, fs] = audioread('songs/twinkle.mp3');
 sig = sig(:,1);
 
 x = 1:length(sig(:,1));
