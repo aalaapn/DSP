@@ -1,5 +1,6 @@
 clear;
-histo = noteHisto('songs/tubthumping.mp3');
+[filename,filepath] = uigetfile('*');
+histo = noteHisto(strcat(filepath,filename));
 
 % plots note histo
 notes = categorical({'A', 'A#/Bb', 'B', 'C', 'C#/Dd', 'D', 'D#/Eb', 'E',...
@@ -18,4 +19,4 @@ end
 [~, histoIndices] = sort(histo,'descend');
 
 key = keyGuess(histoIndices, profiles)
-keyString = notes(key)
+keyString = char(notes(key))
