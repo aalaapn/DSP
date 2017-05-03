@@ -4,11 +4,11 @@ function out = filterbank(sig, bandlimits, maxfreq)
 
 %set defaults
 if nargin <2
-    bandlimits = [0 200 400 800 1600 3200];
+    bandlimits = [0 100 200 400 700 1100 1600 2200 2900 4000];
 end
 
 if nargin <3
-    maxfreq = 4096;
+    maxfreq = 8000;
 end
 
 dft = fft(sig);
@@ -30,8 +30,8 @@ out = zeros(n,num_bands);
 % Create the frequency bands and put them in the vector output.
 
 for i = 1:num_bands
-out(bl(i):br(i),i) = dft(bl(i):br(i));
-out(n+1-br(i):n+1-bl(i),i) = dft(n+1-br(i):n+1-bl(i));
+	out(bl(i):br(i),i) = dft(bl(i):br(i));
+	out(n+1-br(i):n+1-bl(i),i) = dft(n+1-br(i):n+1-bl(i));
 end
 
 out(1,1)=0;

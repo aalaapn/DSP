@@ -4,41 +4,40 @@ for i=1:50
     band = i*100;
     bandlimits = [bandlimits band];
 end
+
 [sig, fs] = audioread('songs/ode.wav');
 sig = sig(:,1);
+
+x = 1:length(sig(:,1));
+
+%create filter bank and plot
 out = filterbank(sig);
 
-hann = hannWindow(out);
+% multi_plot(out, x, 1, length(x));
 
-diff = diffrect(hann);
+%create hann_window and plot
+hann_out = hannWindow(out);
+% multi_plot(hann_out, x, 1, length(x));
+% figure
 
+%downsample signal
+down_low = downsample(hann_out, 100);
+% multi_plot(down_low, x, 1, length(x));
 
-down_low = downsample(diff, 100);
+%compute autocorrelation of each bank
+acfs = ACF_calc(down_low, 10, int64(fs/100));
+a = acfs(:,1);
 
-% auto_cor = autocorr(down_low);
+%convert lags to BPM
+BPM_ACF = BPM_convert(a, fs/100);
 
-[ACF,lags,bounds] = autocorr(down_low(:,1),int64(fs/100),[],2);
+multi_plot(acfs, BPM_ACF, 40, 300);
 
+peak = get_peaks(acfs);
+peak = sort(peak);
+x_peak = 1:length(peak);
+scatter(x_peak, peak);
 
-
-
-
-[~,locs]=findpeaks(ACF);
-lagindex = mean(diff(locs)*0.01);
-
-((fs/10000)*60)/lagindex;
-
-a = [];
-for i = 100:400
-    a = [a ACF(i)];
-end
-
-maxi = max(a);
-
-ind = find(ACF==maxi)
-
-BPM = fs/100*60/ind
-ind = fs/100*60/82
 toc
 % audiowrite('filterbank_out/out1.wav',hann(:,1), fs)
 % audiowrite('filterbank_out/out2.wav',hann(:,2), fs)
