@@ -3,8 +3,8 @@ clear;
 histo = noteHisto(strcat(filepath,filename));
 
 % plots note histo
-notes = categorical({'A', 'A#/Bb', 'B', 'C', 'C#/Dd', 'D', 'D#/Eb', 'E',...
-    'F', 'F#/Gb', 'G', 'G#/Ab'});
+notes = categorical({'A', 'A? / B?', 'B', 'C', 'C? / D?', 'D',...
+    'D? / E?', 'E', 'F', 'F? / G?', 'G', 'G? / A?'});
 bar(notes,histo)
 
 % set up "ideal" profiles, indexed by key (note) num
