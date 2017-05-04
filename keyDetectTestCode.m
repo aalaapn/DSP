@@ -1,6 +1,6 @@
 clear;
 [filename,filepath] = uigetfile('*');
-histo = noteHisto(strcat(filepath,filename));
+[histo,~,~] = noteHisto(strcat(filepath,filename));
 
 % plots note histo
 notes = categorical({'A', 'A# / Bb', 'B', 'C', 'C# / Db', 'D',...
