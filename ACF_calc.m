@@ -8,7 +8,7 @@ function out = ACF_calc(sig, num_banks, fs)
 	end
 	out = [];
 	for i = 1:num_banks
-		[ACFi, lagsi, boundsi] = autocorr(sig(:,i), fs, [], 2);
+		[ACFi, ~, ~] = autocorr(sig(:,i), fs, [], 2);
 		if i == 1
 			out = ACFi;
 		else
