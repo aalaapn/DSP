@@ -1,4 +1,4 @@
-function [ histo ] = noteHisto( fileName )
+function [ histo, data, fs ] = noteHisto( fileName )
 %noteHisto returns histogram of notes detected
 %   Detailed explanation goes here
     histo = zeros(12,1);  % indexed by note num
