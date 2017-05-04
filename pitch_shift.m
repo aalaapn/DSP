@@ -42,8 +42,8 @@ for col = 1:cols
     end
     
     %Perform inverse short time Fourier transform
-    audio_shifted(:, col) = zeros(fftpoints+(fftpoints/2*(newsize)),1);
-    for b = 0:hop:(hop*(newsize))
+    audio_shifted(:, col) = zeros(fftpoints+(fftpoints/2*(newsize-1)),1);
+    for b = 0:hop:(hop*(newsize-1))
         half = new(:,1+b/hop);
         whole = [half; conj(half((fftpoints/2):-1:2))];
         part = real(ifft(whole));
