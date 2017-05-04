@@ -12,7 +12,7 @@ function out = multi_plot(sig, x, beg, lags)
 
 
 	s = size(sig);
-	numplots = s(2)
+	numplots = s(2);
 	x = x(beg: lags);
 
 	for i=1:(numplots)
