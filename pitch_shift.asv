@@ -32,19 +32,30 @@ for col = 1:cols
     index = 1;
     new = zeros(1+fftpoints/2, newsize);
     
+    %Columbia
+    dphi = zeros(1, 1+fftpoints/2);
+    dphi(2:(1+fftpoints/2)) = (2*pi*hop) ./ (rows./(1:(fftpoints/2)));
+    
     for time = t
         stft1 = stft(:,1+floor(time));
         stft2 = stft(:,2+floor(time));
-        new_mag = (1-(time-floor(time)))*abs(stft1) + (time-floor(time))*abs(stft2);
-        new(:, index) = new_mag .* exp(-j*phase);
-        phase = mod(phase + (angle(stft2)-angle(stft1)),2*pi);
+        new_mag = (time-floor(time))*abs(stft1) + (1-(time-floor(time)))*abs(stft2);
+        
+        %Columbia
+        dp = angle(stft2)-angle(stft1);
+        dp = dp - 2*pi*round(dp/(2*pi));
+        new(:, index) = new_mag .* exp(j*phase);
+        phase = phase + dphi' + dp;
+        
+        %new(:, index) = new_mag .* exp(j*phase);
+        %phase = mod(phase + (angle(stft2)-angle(stft1)),2*pi);
         index = index + 1;
     end
     
     %Perform inverse short time Fourier transform
-    audio_shifted(:, col) = zeros(fftpoints+(fftpoints/2*(newsize)),1);
-    for b = 0:hop:(hop*(newsize))
-        half = new(:,1+b/hop);
+    audio_shifted(:, col) = zeros(fftpoints+(fftpoints/2*(newsize-1)),1);
+    for b = 0:hop:(hop*(newsize-1))
+        half = new(:,1+2*b/fftpoints);
         whole = [half; conj(half((fftpoints/2):-1:2))];
         part = real(ifft(whole));
         audio_shifted((b+1):(b+fftpoints), col) = audio_shifted((b+1):(b+fftpoints), col)+2/3*part.*window';
