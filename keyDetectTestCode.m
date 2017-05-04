@@ -1,6 +1,7 @@
 clear;
 [filename,filepath] = uigetfile('*');
-[histo,~,~] = noteHisto(strcat(filepath,filename));
+[data, fs] = audioread(strcat(filepath,filename));
+histo = noteHisto(data, fs);
 
 % plots note histo
 notes = categorical({'A', 'A# / Bb', 'B', 'C', 'C# / Db', 'D',...

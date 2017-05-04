@@ -1,4 +1,4 @@
-function [ histo, data, fs ] = noteHisto( fileName )
+function [ histo ] = noteHisto( data, fs )
 %noteHisto returns histogram of notes detected
 %   Detailed explanation goes here
     histo = zeros(12,1);  % indexed by note num
@@ -8,7 +8,6 @@ function [ histo, data, fs ] = noteHisto( fileName )
     % 
     % data = dataA + dataC + dataE;
     % fs = fsA;
-    [data,fs] = audioread(fileName);
 
     channels = size(data);
     channels = channels(2);
